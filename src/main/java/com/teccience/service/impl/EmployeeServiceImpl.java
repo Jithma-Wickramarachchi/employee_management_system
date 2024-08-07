@@ -3,6 +3,7 @@ package com.teccience.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teccience.dto.EmployeeDto;
 import com.teccience.entitiy.EmployeeEntity;
+import com.teccience.exception.EmployeeIdNotFoundException;
 import com.teccience.repository.EmployeeRepository;
 import com.teccience.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +39,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto updateEmployee(EmployeeDto dto) {
-        return null;
+        EmployeeEntity entity = mapper.convertValue(dto, EmployeeEntity.class);
+        return mapper.convertValue(repository.save(entity), EmployeeDto.class);
     }
 
     @Override
-    public Boolean deleteEmployee(Integer id) {
-        return false;
+    public Integer deleteEmployee(Integer id) {
+        if (repository.findById(id).isEmpty()){
+            throw new EmployeeIdNotFoundException(id);
+        }
+        repository.deleteById(id);
+        return id;
     }
 }
