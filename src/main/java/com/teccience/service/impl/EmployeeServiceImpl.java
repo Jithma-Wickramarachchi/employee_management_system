@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -28,10 +27,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<EmployeeDto> getEmployeeList() {
         List<EmployeeDto> employeeDtoList = new ArrayList<>();
         List<EmployeeEntity> employeeEntityList = repository.findAll();
-        Iterator<EmployeeEntity> iterator = employeeEntityList.iterator();
 
-        while (iterator.hasNext()){
-            EmployeeDto dto = mapper.convertValue(iterator.next(), EmployeeDto.class);
+        for (EmployeeEntity employeeEntity : employeeEntityList) {
+            EmployeeDto dto = mapper.convertValue(employeeEntity, EmployeeDto.class);
             employeeDtoList.add(dto);
         }
         return employeeDtoList;
@@ -39,6 +37,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto updateEmployee(EmployeeDto dto) {
+        if(repository.findById(dto.getId()).isEmpty()){
+            throw new EmployeeIdNotFoundException(dto.getId());
+        }
         EmployeeEntity entity = mapper.convertValue(dto, EmployeeEntity.class);
         return mapper.convertValue(repository.save(entity), EmployeeDto.class);
     }

@@ -2,6 +2,7 @@ package com.teccience.controller;
 
 import com.teccience.dto.EmployeeDto;
 import com.teccience.service.EmployeeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 public class EmployeeController {
     private final EmployeeService service;
     @PostMapping
-    ResponseEntity<EmployeeDto> addEmployee(@RequestBody EmployeeDto dto){
+    ResponseEntity<EmployeeDto> addEmployee(@Valid @RequestBody EmployeeDto dto){
         return new ResponseEntity<>(service.addEmployee(dto), HttpStatus.CREATED);
     }
     @GetMapping
@@ -23,7 +24,7 @@ public class EmployeeController {
         return new ResponseEntity<>(service.getEmployeeList(), HttpStatus.OK);
     }
     @PutMapping
-    ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto dto){
+    ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto dto){
         return new ResponseEntity<>(service.updateEmployee(dto), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
